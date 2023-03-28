@@ -20,8 +20,10 @@ function getPrimes() {
   return primes;
 }
 
-function generateNumber() {
-  return Math.floor(Math.random() * MAX_NUM);
+function generateNumber(): number {
+  const num = Math.floor(Math.random() * MAX_NUM);
+  if (num % 2 === 0 || num % 5 === 0) return generateNumber();
+  return num;
 }
 
 export default function Home() {
@@ -30,7 +32,7 @@ export default function Home() {
   const [answer, setAnswer] = useState<boolean | null>(null);
   const [primes, setPrimes] = useState<number[]>([]);
 
-  const [rightAnswers, setRightAnswers] = useState(0);
+  const [rightPrimes, setrightPrimes] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [totalPrimes, setTotalPrimes] = useState(0);
 
@@ -48,11 +50,11 @@ export default function Home() {
       if (isPrime(num)) setTotalPrimes(totalPrimes + 1);
 
       if (answer === isPrime(num)) {
-        setRightAnswers(rightAnswers + 1);
-        alert(`Correct, ${num} is ${isPrime(num) ? "" : "not "}prime!`);
+        if(isPrime(num)) setrightPrimes(rightPrimes + 1);
+        alert(`Correct 👌, ${num} is ${isPrime(num) ? "" : "not "}prime!`);
       } else {
         setWrongAnswers(wrongAnswers + 1);
-        alert(`Wrong, ${num} is ${isPrime(num) ? "" : "not "}prime!`);
+        alert(`Wrong ❌, ${num} is ${isPrime(num) ? "" : "not "}prime!`);
       }
       setNum(generateNumber());
       setAnswer(null);
@@ -67,11 +69,10 @@ export default function Home() {
         <button className="bg-blue-600 rounded-md p-4 w-24" onClick={() => setAnswer(false)}>No</button>
       </div>
       <div className="flex flex-col gap-4 text-xl text-center">
-        <p>Right answers: {rightAnswers}</p>
-        <p>Wrong answers: {wrongAnswers}</p>
+        <p>Right primes guessed: {rightPrimes}</p>
         <p>Total primes: {totalPrimes}</p>
-        <p>Prime percentage: {(100 * primes.length / MAX_NUM).toFixed(2)} %</p>
-        <p>Current run prime percentage: {(100 * (totalPrimes / (rightAnswers + wrongAnswers)) || 0).toFixed(2)} %</p>
+        <p>Wrong answers: {wrongAnswers}</p>
+        <p>Percentage of primes guessed correctly: {(100 * rightPrimes / totalPrimes || 0).toFixed(2)} %</p>
       </div>
     </div>
   )
