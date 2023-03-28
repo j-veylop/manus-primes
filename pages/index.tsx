@@ -5,7 +5,7 @@ const MAX_NUM = 2 ** 14;
 function getPrimes() {
   const primes = [2];
 
-  for (let num = 3; num < MAX_NUM; num+=2) {
+  for (let num = 3; num < MAX_NUM; num += 2) {
     for (const prime of primes) {
       if (num % prime === 0) {
         break;
@@ -33,6 +33,7 @@ export default function Home() {
   const [primes, setPrimes] = useState<number[]>([]);
 
   const [rightPrimes, setrightPrimes] = useState(0);
+  const [rightAnswers, setRightAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [totalPrimes, setTotalPrimes] = useState(0);
 
@@ -50,7 +51,8 @@ export default function Home() {
       if (isPrime(num)) setTotalPrimes(totalPrimes + 1);
 
       if (answer === isPrime(num)) {
-        if(isPrime(num)) setrightPrimes(rightPrimes + 1);
+        if (isPrime(num)) setrightPrimes(rightPrimes + 1);
+        setRightAnswers(rightAnswers + 1);
         alert(`Correct 👌, ${num} is ${isPrime(num) ? "" : "not "}prime!`);
       } else {
         setWrongAnswers(wrongAnswers + 1);
@@ -62,18 +64,21 @@ export default function Home() {
   }, [answer]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen text-4xl gap-32">
+    <div className="flex flex-col items-center justify-center h-screen text-4xl gap-32 px-20 py-16">
       <p>Is {num} prime?</p>
       <div className="flex flex-row gap-4 text-white">
-        <button className="bg-blue-600 rounded-md p-4 w-24" onClick={() => setAnswer(true)}>Yes</button>
-        <button className="bg-blue-600 rounded-md p-4 w-24" onClick={() => setAnswer(false)}>No</button>
+        <button className="bg-[#936b79] rounded-md p-4 w-24" onClick={() => setAnswer(true)}>Yes</button>
+        <button className="bg-[#936b79] rounded-md p-4 w-24" onClick={() => setAnswer(false)}>No</button>
       </div>
       <div className="flex flex-col gap-4 text-xl text-center">
         <p>Right primes guessed: {rightPrimes}</p>
         <p>Total primes: {totalPrimes}</p>
+        <p>Right answers: {rightAnswers}</p>
         <p>Wrong answers: {wrongAnswers}</p>
+        <p>Percentage of right answers: {(100 * rightAnswers / (rightAnswers + wrongAnswers) || 0).toFixed(2)} %</p>
         <p>Percentage of primes guessed correctly: {(100 * rightPrimes / totalPrimes || 0).toFixed(2)} %</p>
       </div>
+      <iframe src="https://open.spotify.com/embed/album/0RcgQYkpfKAhg7dyoXoPm8?utm_source=generator" width="100%" height="352" autoplay="1" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
   )
 }
