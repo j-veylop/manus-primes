@@ -1,8 +1,8 @@
 {
   "name": "Manu's Primes",
   "short_name": "Manu's Primes",
-  "theme_color": "#ffffff",
-  "background_color": "#004740",
+  "theme_color": "#936b79",
+  "background_color": "#936b79",
   "display": "fullscreen",
   "orientation": "portrait",
   "scope": "/",
