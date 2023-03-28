@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { Button } from "./Button";
-import { getPrimes } from "./getPrimes";
-import { Score } from "./Score";
+import Button from "./Button";
+import { getPrimes } from "../getPrimes";
+import Score from "./Score";
 
 const MAX_NUM = 2 ** 14;
 
