@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import Button from "./Button";
 import { getPrimes } from "../getPrimes";
 import Score from "./Score";
+import factors from "../primeFactors";
 
 const MAX_NUM = 2 ** 14;
 
@@ -116,13 +117,13 @@ export default function Home() {
         }
         localStorage.rightAnswers = rightAnswers + 1;
         setRightAnswers((rightAnswers: number) => rightAnswers + 1);
-        alert(`Correct 👌, ${num} is ${isPrime(num) ? "" : "not "}prime!`);
+        alert(`Correct 👌, ${num} is ${isPrime(num) ? "" : "not "}prime! ${!isPrime(num) ? `Prime factors: ${factors(num).join(', ')}` : ''}`);
       } else {
         localStorage.currentStreak = 0;
         setCurrentStreak(0);
         localStorage.wrongAnswers = wrongAnswers + 1;
         setWrongAnswers((wrongAnswers: number) => wrongAnswers + 1);
-        alert(`Wrong ❌, ${num} is ${isPrime(num) ? "" : "not "}prime!`);
+        alert(`Wrong ❌, ${num} is ${isPrime(num) ? "" : "not "}prime! ${!isPrime(num) ? `Prime factors: ${factors(num).join(', ')}` : ''}`);
       }
       setNum(generateNumber());
       setAnswer(null);
@@ -130,7 +131,8 @@ export default function Home() {
   }, [answer]);
 
   return (
-    <div className="flex flex-col bg-purple-100 items-center justify-center min-h-screen text-4xl text-center gap-12 px-12 py-16 font-varela  transition-all duration-300">
+    <div className="bg-purple-100 flex flex-row justify-center">
+    <div className="flex flex-col flex-grow max-w-3xl items-center justify-center min-h-screen text-4xl text-center gap-12 px-12 py-16 font-varela transition-all duration-300">
       <p>Is {num} prime?</p>
       <div className="flex flex-row gap-4 text-white w-full">
         <Button text="Yes" onClick={() => setAnswer(true)} />
@@ -146,6 +148,7 @@ export default function Home() {
       </div>
       {/* Reset score */}
       <Button text="Reset Score" onClick={() => resetScore()} />
+    </div>
     </div>
   )
 
