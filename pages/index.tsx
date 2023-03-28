@@ -1,24 +1,9 @@
 import { useEffect, useState } from "react"
+import { Button } from "./Button";
+import { getPrimes } from "./getPrimes";
+import { Score } from "./Score";
 
 const MAX_NUM = 2 ** 14;
-
-function getPrimes() {
-  const primes = [2];
-
-  for (let num = 3; num < MAX_NUM; num += 2) {
-    for (const prime of primes) {
-      if (num % prime === 0) {
-        break;
-      }
-      if (prime * prime > num) {
-        primes.push(num);
-        break;
-      }
-    }
-  }
-
-  return primes;
-}
 
 export default function Home() {
 
@@ -39,7 +24,6 @@ export default function Home() {
   function resetScore() {
     if (window.confirm('Reset score?')) {
       localStorage.clear();
-      // window.location.reload();
       reloadLocalVars();
     }
   }
@@ -101,7 +85,7 @@ export default function Home() {
     reloadLocalVars();
 
     // Initialize the game
-    setPrimes(getPrimes());
+    setPrimes(getPrimes(MAX_NUM));
     setNum(generateNumber());
 
     return () => {
@@ -121,23 +105,23 @@ export default function Home() {
 
       if (answer === isPrime(num)) {
         localStorage.currentStreak = currentStreak + 1;
-        setCurrentStreak(currentStreak => currentStreak + 1);
+        setCurrentStreak((currentStreak: number) => currentStreak + 1);
         if (currentStreak + 1 > maxStreak) {
           localStorage.maxStreak = currentStreak + 1;
-          setMaxStreak(maxStreak => currentStreak + 1);
+          setMaxStreak(() => currentStreak + 1);
         }
         if (isPrime(num)) {
           localStorage.rightPrimes = rightPrimes + 1;
-          setrightPrimes(rightPrimes => rightPrimes + 1);
+          setrightPrimes((rightPrimes: number) => rightPrimes + 1);
         }
         localStorage.rightAnswers = rightAnswers + 1;
-        setRightAnswers(rightAnswers => rightAnswers + 1);
+        setRightAnswers((rightAnswers: number) => rightAnswers + 1);
         alert(`Correct 👌, ${num} is ${isPrime(num) ? "" : "not "}prime!`);
       } else {
         localStorage.currentStreak = 0;
         setCurrentStreak(0);
         localStorage.wrongAnswers = wrongAnswers + 1;
-        setWrongAnswers(wrongAnswers => wrongAnswers + 1);
+        setWrongAnswers((wrongAnswers: number) => wrongAnswers + 1);
         alert(`Wrong ❌, ${num} is ${isPrime(num) ? "" : "not "}prime!`);
       }
       setNum(generateNumber());
@@ -146,30 +130,39 @@ export default function Home() {
   }, [answer]);
 
   return (
-    <div className="flex flex-col bg-purple-100 items-center justify-center min-h-screen text-4xl text-center gap-12 px-12 py-16">
+    <div className="flex flex-col bg-purple-100 items-center justify-center min-h-screen text-4xl text-center gap-12 px-12 py-16 font-varela  transition-all duration-300">
       <p>Is {num} prime?</p>
       <div className="flex flex-row gap-4 text-white w-full">
-        <button className="bg-dune-alive rounded-md p-4 w-full" onClick={() => setAnswer(true)}>Yes</button>
-        <button className="bg-dune-alive rounded-md p-4 w-full" onClick={() => setAnswer(false)}>No</button>
+        <Button text="Yes" onClick={() => setAnswer(true)} />
+        <Button text="No" onClick={() => setAnswer(false)} />
       </div>
-      <div className="flex flex-col gap-4 text-sm text-center">
-        <p>Current Streak: {currentStreak}</p>
-        <p>Max Streak: {maxStreak}</p>
-        <p>Right primes guessed: {rightPrimes}</p>
-        <p>Total primes: {totalPrimes}</p>
-        <p>Right answers: {rightAnswers}</p>
-        <p>Wrong answers: {wrongAnswers}</p>
-        <p>Percentage of right answers: {(100 * rightAnswers / (rightAnswers + wrongAnswers) || 0).toFixed(2)} %</p>
-        <p>Percentage of right primes: {(100 * rightPrimes / totalPrimes || 0).toFixed(2)} %</p>
-      </div>
+      {/* Statistics */}
+      {stats()}
       {/* Spotify embed */}
       <iframe title="dune alive on spotify" src="https://open.spotify.com/embed/album/0RcgQYkpfKAhg7dyoXoPm8?utm_source=generator" width="100%" height="512" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      {/* List of numbers */}
       <div className="flex flex-col gap-2">
         {numberList.map((num, index) => <p className={`text-xs ${isPrime(num) ? 'font-bold' : ''}`} key={index}>{num}</p>)}
       </div>
-      <button onClick={() => resetScore()} className="bg-dune-alive rounded-md p-4 w-full text-white">
-        Clear Score
-      </button>
+      {/* Reset score */}
+      <Button text="Reset Score" onClick={() => resetScore()} />
     </div>
   )
+
+  function stats() {
+    return (
+      <div className="flex flex-col gap-4 text-sm text-center">
+        <p className="text-2xl">Current Streak: {currentStreak}</p>
+        <Score streak={currentStreak} />
+        <p >Max Streak: {maxStreak}</p>
+        <Score streak={maxStreak} />
+        {/* <p>Right primes guessed: {rightPrimes}</p>
+      <p>Total primes: {totalPrimes}</p>
+      <p>Right answers: {rightAnswers}</p>
+      <p>Wrong answers: {wrongAnswers}</p>
+      <p>Percentage of right answers: {(100 * rightAnswers / (rightAnswers + wrongAnswers) || 0).toFixed(2)} %</p>
+      <p>Percentage of right primes: {(100 * rightPrimes / totalPrimes || 0).toFixed(2)} %</p> */}
+      </div>
+    );
+  }
 }
