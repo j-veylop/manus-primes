@@ -128,6 +128,8 @@ export default function Home() {
       if (answer === isPrime(num)) {
         localStorage.currentStreak = currentStreak + 1;
         setCurrentStreak(currentStreak => currentStreak + 1);
+        console.log(currentStreak);
+        console.log(maxStreak);
         if (currentStreak > maxStreak) {
           localStorage.maxStreak = currentStreak + 1;
           setMaxStreak(maxStreak => currentStreak + 1);
