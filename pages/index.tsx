@@ -129,8 +129,8 @@ export default function Home() {
         localStorage.currentStreak = currentStreak + 1;
         setCurrentStreak(currentStreak => currentStreak + 1);
         if (currentStreak > maxStreak) {
-          localStorage.maxStreak = maxStreak + 1;
-          setMaxStreak(maxStreak => maxStreak + 1)
+          localStorage.maxStreak = currentStreak;
+          setMaxStreak(maxStreak => currentStreak);
         }
         if (isPrime(num)) {
           localStorage.rightPrimes = rightPrimes + 1;
