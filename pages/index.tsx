@@ -20,9 +20,6 @@ function getPrimes() {
   return primes;
 }
 
-
-
-
 export default function Home() {
 
   const [num, setNum] = useState(0);
@@ -57,25 +54,22 @@ export default function Home() {
     return primes.includes(num);
   }
 
-  const answerQuestion = (val: boolean) => {
-    setAnswer(val);
-  }
-
   const handler = (e: { code: string; ctrlKey: boolean }) => {
     if (e.ctrlKey) {
       return;
     }
-
-    if (e.code === 'KeyY') {
-      answerQuestion(true);
-    }
-
-    if (e.code === 'KeyN') {
-      answerQuestion(false);
-    }
-
-    if (e.code === 'KeyR') {
-      resetScore();
+    switch (e.code) {
+      case 'KeyY':
+        setAnswer(true);
+        break;
+      case 'KeyN':
+        setAnswer(false);
+        break;
+      case 'KeyR':
+        resetScore();
+        break;
+      default:
+        break;
     }
   }
 
@@ -155,8 +149,8 @@ export default function Home() {
     <div className="flex flex-col bg-purple-100 items-center justify-center min-h-screen text-4xl text-center gap-12 px-12 py-16">
       <p>Is {num} prime?</p>
       <div className="flex flex-row gap-4 text-white w-full">
-        <button className="bg-dune-alive rounded-md p-4 w-full" onClick={() => answerQuestion(true)}>Yes</button>
-        <button className="bg-dune-alive rounded-md p-4 w-full" onClick={() => answerQuestion(false)}>No</button>
+        <button className="bg-dune-alive rounded-md p-4 w-full" onClick={() => setAnswer(true)}>Yes</button>
+        <button className="bg-dune-alive rounded-md p-4 w-full" onClick={() => setAnswer(false)}>No</button>
       </div>
       <div className="flex flex-col gap-4 text-sm text-center">
         <p>Current Streak: {currentStreak}</p>
