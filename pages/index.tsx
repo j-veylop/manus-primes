@@ -123,7 +123,7 @@ export default function Home() {
         <p>Percentage of right primes: {(100 * rightPrimes / totalPrimes || 0).toFixed(2)} %</p>
       </div>
       {/* Spotify embed */}
-      <iframe src="https://open.spotify.com/embed/album/0RcgQYkpfKAhg7dyoXoPm8?utm_source=generator" width="100%" height="352" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      <iframe title="dune alive on spotify" src="https://open.spotify.com/embed/album/0RcgQYkpfKAhg7dyoXoPm8?utm_source=generator" width="100%" height="512" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
       <div className="flex flex-col gap-2">
         {numberList.map((num, index) => <p className={`text-xs ${isPrime(num) ? 'font-bold' : ''}`} key={index}>{num}</p>)}
       </div>
