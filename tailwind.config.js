@@ -4,7 +4,12 @@ module.exports = {
     './pages/**/*.{html,ts,tsx,js,jsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "dune-alive": "#936b79",
+      }
+    },
+
   },
   plugins: [],
 }

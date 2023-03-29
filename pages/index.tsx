@@ -20,10 +20,10 @@ function getPrimes() {
   return primes;
 }
 
-function generateNumber(): number {
-  const num = Math.floor(Math.random() * MAX_NUM);
-  if (num % 2 === 0 || num % 5 === 0) return generateNumber();
-  return num;
+
+function resetScore() {
+  localStorage.clear();
+  window.location.reload();
 }
 
 export default function Home() {
@@ -39,26 +39,67 @@ export default function Home() {
 
   const [numberList, setNumberList] = useState<number[]>([]);
 
+  function generateNumber(): number {    
+    const localNum = Math.floor(Math.random() * MAX_NUM);
+    if (localNum % 2 === 0 || localNum % 5 === 0) return generateNumber();
+    return localNum;
+  }
+
   const isPrime = (num: number) => {
     return primes.includes(num);
   }
 
+  const answerQuestion = (val: boolean) => {
+    setAnswer(val);
+  }
+
   useEffect(() => {
+    // Load the stored values
+    setrightPrimes(parseInt(localStorage.getItem('rightPrimes') || '0'));
+    setRightAnswers(parseInt(localStorage.getItem('rightAnswers') || '0'));
+    setWrongAnswers(parseInt(localStorage.getItem('wrongAnswers') || '0'));
+    setTotalPrimes(parseInt(localStorage.getItem('totalPrimes') || '0'));
+    let numList: number[] = [];
+    
+    if (!localStorage.numberList) {
+      numList = [];
+    } else {
+      if (localStorage.numberList.at(0) === ',') {
+        localStorage.numberList = localStorage.numberList.at(0);
+      }
+      try {
+        numList = JSON.parse(`[${localStorage.getItem('numberList')}]`);
+      } catch (err: any) {
+        console.error(err.message);
+      }
+    }
+    setNumberList(numList);
+    // Initialize the game
     setPrimes(getPrimes());
     setNum(generateNumber());
   }, []);
 
   useEffect(() => {
     if (answer !== null) {
-      setNumberList([...numberList, num].sort((a, b) => (a - b)));
-      if (isPrime(num)) setTotalPrimes(totalPrimes + 1);
+      localStorage.numberList = [...numberList, num].sort((a, b) => (a - b));
+      setNumberList(numberList => [...numberList, num].sort((a, b) => (a - b)));
+
+      if (isPrime(num)) {
+        localStorage.totalPrimes = totalPrimes + 1;
+        setTotalPrimes(totalPrimes => totalPrimes + 1);
+      }
 
       if (answer === isPrime(num)) {
-        if (isPrime(num)) setrightPrimes(rightPrimes + 1);
-        setRightAnswers(rightAnswers + 1);
+        if (isPrime(num)) {
+          localStorage.rightPrimes = rightPrimes + 1;
+          setrightPrimes(rightPrimes => rightPrimes + 1);
+        } 
+        localStorage.rightAnswers = rightAnswers + 1;
+        setRightAnswers(rightAnswers => rightAnswers + 1);
         alert(`Correct 👌, ${num} is ${isPrime(num) ? "" : "not "}prime!`);
       } else {
-        setWrongAnswers(wrongAnswers + 1);
+        localStorage.wrongAnswers = wrongAnswers + 1;
+        setWrongAnswers(wrongAnswers => wrongAnswers + 1);
         alert(`Wrong ❌, ${num} is ${isPrime(num) ? "" : "not "}prime!`);
       }
       setNum(generateNumber());
@@ -69,9 +110,9 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-4xl text-center gap-12 px-12 py-16">
       <p>Is {num} prime?</p>
-      <div className="flex flex-row gap-4 text-white">
-        <button className="bg-[#936b79] rounded-md p-4 w-24" onClick={() => setAnswer(true)}>Yes</button>
-        <button className="bg-[#936b79] rounded-md p-4 w-24" onClick={() => setAnswer(false)}>No</button>
+      <div className="flex flex-row gap-4 text-white w-full">
+        <button className="bg-dune-alive rounded-md p-4 w-full" onClick={() => answerQuestion(true)}>Yes</button>
+        <button className="bg-dune-alive rounded-md p-4 w-full" onClick={() => answerQuestion(false)}>No</button>
       </div>
       <div className="flex flex-col gap-4 text-sm text-center">
         <p>Right primes guessed: {rightPrimes}</p>
@@ -81,13 +122,14 @@ export default function Home() {
         <p>Percentage of right answers: {(100 * rightAnswers / (rightAnswers + wrongAnswers) || 0).toFixed(2)} %</p>
         <p>Percentage of primes guessed correctly: {(100 * rightPrimes / totalPrimes || 0).toFixed(2)} %</p>
       </div>
+      {/* Spotify embed */}
       <iframe src="https://open.spotify.com/embed/album/0RcgQYkpfKAhg7dyoXoPm8?utm_source=generator" width="100%" height="352" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
       <div className="flex flex-col gap-2">
-        {numberList.map((num) => {
-          if (isPrime(num)) return <p className="text-xs font-bold">{num}</p>
-          else return <p className="text-xs">{num}</p>
-        })}
+        {numberList.map((num, index) => <p className={`text-xs ${isPrime(num) ? 'font-bold' : ''}`} key={index}>{num}</p>)}
       </div>
+      <button onClick={() => resetScore()} className="bg-dune-alive rounded-md p-4 w-full text-white">
+        Clear Score
+      </button>
     </div>
   )
 }
