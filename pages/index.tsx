@@ -108,7 +108,7 @@ export default function Home() {
   }, [answer]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-4xl text-center gap-12 px-12 py-16">
+    <div className="flex flex-col bg-purple-100 items-center justify-center min-h-screen text-4xl text-center gap-12 px-12 py-16">
       <p>Is {num} prime?</p>
       <div className="flex flex-row gap-4 text-white w-full">
         <button className="bg-dune-alive rounded-md p-4 w-full" onClick={() => answerQuestion(true)}>Yes</button>
