@@ -21,10 +21,7 @@ function getPrimes() {
 }
 
 
-function resetScore() {
-  localStorage.clear();
-  window.location.reload();
-}
+
 
 export default function Home() {
 
@@ -39,7 +36,15 @@ export default function Home() {
 
   const [numberList, setNumberList] = useState<number[]>([]);
 
-  function generateNumber(): number {    
+  function resetScore() {
+    if (window.confirm('Reset score?')) {
+      localStorage.clear();
+      // window.location.reload();
+      reloadLocalVars();
+    }
+  }
+
+  function generateNumber(): number {
     const localNum = Math.floor(Math.random() * MAX_NUM);
     if (localNum % 2 === 0 || localNum % 5 === 0) return generateNumber();
     return localNum;
@@ -53,17 +58,32 @@ export default function Home() {
     setAnswer(val);
   }
 
-  useEffect(() => {
-    // Load the stored values
+  const handler = (e: { code: string; ctrlKey: boolean }) => {
+    if (e.ctrlKey) {
+      return;
+    }
+
+    if (e.code === 'KeyY') {
+      answerQuestion(true);
+    }
+
+    if (e.code === 'KeyN') {
+      answerQuestion(false);
+    }
+
+    if (e.code === 'KeyR') {
+      resetScore();
+    }
+  }
+
+  function reloadLocalVars() {
     setrightPrimes(parseInt(localStorage.getItem('rightPrimes') || '0'));
     setRightAnswers(parseInt(localStorage.getItem('rightAnswers') || '0'));
     setWrongAnswers(parseInt(localStorage.getItem('wrongAnswers') || '0'));
     setTotalPrimes(parseInt(localStorage.getItem('totalPrimes') || '0'));
+
     let numList: number[] = [];
-    
-    if (!localStorage.numberList) {
-      numList = [];
-    } else {
+    if (localStorage.numberList) {
       if (localStorage.numberList.at(0) === ',') {
         localStorage.numberList = localStorage.numberList.at(0);
       }
@@ -74,9 +94,20 @@ export default function Home() {
       }
     }
     setNumberList(numList);
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', handler);
+    // Load the stored values
+    reloadLocalVars();
+
     // Initialize the game
     setPrimes(getPrimes());
     setNum(generateNumber());
+
+    return () => {
+      document.removeEventListener('keydown', handler);
+    }
   }, []);
 
   useEffect(() => {
@@ -93,7 +124,7 @@ export default function Home() {
         if (isPrime(num)) {
           localStorage.rightPrimes = rightPrimes + 1;
           setrightPrimes(rightPrimes => rightPrimes + 1);
-        } 
+        }
         localStorage.rightAnswers = rightAnswers + 1;
         setRightAnswers(rightAnswers => rightAnswers + 1);
         alert(`Correct 👌, ${num} is ${isPrime(num) ? "" : "not "}prime!`);
